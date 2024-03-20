@@ -98,7 +98,8 @@ app.get("/cart",(req,res)=>{
   const q9=count(9)
   const q10=count(10)
   const q11=count(11)
-  res.render("cart.ejs",{q1:q1,q2:q2,q3:q3,q4:q4,q5:q5,q6:q6,q7:q7,q8:q8,q9:q9,q10:q10,q11:q11})
+  const amt=q1*172+q2*285+q3*210+q4*1899+q5*1199+q6*348+q7*175+q8*549+q9*138+q10*799+q11*569
+  res.render("cart.ejs",{q1:q1,q2:q2,q3:q3,q4:q4,q5:q5,q6:q6,q7:q7,q8:q8,q9:q9,q10:q10,q11:q11,amt:amt})
   
 })
 
@@ -112,7 +113,7 @@ function count(a)
     k++;
   }
   return k;
-}
+}   
 
 
 
@@ -190,6 +191,65 @@ app.post("/search",async(req,res)=>
 app.get("/prod1",(req,res)=>{
   res.render("prod1.ejs")
 })
+
+const HOST_URL = "http://localhost:4000";
+
+app.use(express.static("public"));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+
+app.get("/comms", async (req, res) => {
+  try {
+    const response = await axios.get(`${HOST_URL}/posts`);
+    console.log(response);
+    res.render("blog.ejs", { posts: response.data });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching posts" });
+  }
+});
+
+
+app.get("/new", (req, res) => {
+  res.render("modify.ejs", { heading: "New Post", submit: "Create Post" });
+});
+
+app.get("/addans/:id", async (req, res) => {
+  try {
+    const response = await axios.get(`${HOST_URL}/posts/${req.params.id}`);
+    console.log(response.data);
+    res.render("modify.ejs", {
+      post: response.data,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching post" });
+  }
+});
+
+app.post("/api/posts", async (req, res) => {
+  try {
+    const response = await axios.post(`${HOST_URL}/posts`, req.body);
+    console.log(response.data);
+    res.redirect("/comms");
+  } catch (error) {
+    res.status(500).json({ message: "Error creating post" });
+  }
+});
+
+app.post("/api/posts/:id", async (req, res) => {
+  console.log("called");
+  try {
+    const response = await axios.patch(
+      `${HOST_URL}/posts/${req.params.id}`,
+      req.body
+    );
+    console.log(response.data);
+    res.redirect("/comms");
+  } catch (error) {
+    res.status(500).json({ message: "Error updating post" });
+  }
+});
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

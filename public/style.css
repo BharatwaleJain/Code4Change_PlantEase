@@ -2698,3 +2698,23 @@ img {
       transform: translate(0, -50%);
       
     }
+
+    .cart-btn-area {
+      justify-content: center;
+      padding: 0px;
+    }
+    .cart-btn {
+      font-size: 16px;
+      color: #ffffff;
+      font-weight: 600;
+      background-color: #303030;
+      width: 200%;  
+      height: 100%;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    .cart-btn:hover, .cart-btn:focus {
+      background-color: #70c745;
+      color: #ffffff;
+      border-color: #70c745;
+    }
